@@ -1,10 +1,11 @@
 {
     "config": {
         "step": {
-            "address": {
+            "user": {
                 "description": "Please enter the IP address of the Fire+ ",
                 "data": {
-                    "ip_address": "Fire+ Ip"
+                    "ip_address": "Fire+ Ip",
+                    "interval": "Polling interval in seconds"
                 }
             }
         },

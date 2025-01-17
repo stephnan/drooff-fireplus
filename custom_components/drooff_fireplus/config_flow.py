@@ -54,7 +54,7 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 )
 
         return self.async_show_form(
-            step_id="address",
+            step_id="user",
             data_schema=vol.Schema(
                 {
                     vol.Required(
@@ -65,6 +65,8 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                             type=selector.TextSelectorType.TEXT,
                         ),
                     )
+                    ,
+                    vol.Optional("interval", default=30): int,
                 },
             ),
             errors=_errors,

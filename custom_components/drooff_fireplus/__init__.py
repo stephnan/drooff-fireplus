@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
+from homeassistant.const import Platform, CONF_IP_ADDRESS
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.loader import async_get_loaded_integration
 
@@ -21,13 +21,10 @@ from .data import DrooffFireplusData
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
-
     from .data import DrooffFireplusConfigEntry
 
 PLATFORMS: list[Platform] = [
-    Platform.SENSOR,
-    Platform.BINARY_SENSOR,
-    Platform.SWITCH,
+    Platform.SENSOR
 ]
 
 
@@ -41,10 +38,10 @@ async def async_setup_entry(
         hass=hass,
         logger=LOGGER,
         name=DOMAIN,
-        update_interval=timedelta(seconds=30),
+        update_interval=timedelta(seconds=entry.data["interval"]),
     )
     entry.runtime_data = DrooffFireplusData(
-        client=DrooffFireplusApiClient(session=async_get_clientsession(hass), ip="192"),
+        client=DrooffFireplusApiClient(session=async_get_clientsession(hass), ip=entry.data[CONF_IP_ADDRESS]),
         integration=async_get_loaded_integration(hass, entry.domain),
         coordinator=coordinator,
     )

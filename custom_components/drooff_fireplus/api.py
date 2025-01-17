@@ -38,7 +38,7 @@ def _verify_response_or_raise(response: aiohttp.ClientResponse) -> None:
 class DrooffFireplusApiClient:
     """Sample API Client."""
 
-    def __init__(self, session: aiohttp.ClientSession, ip) -> None:
+    def __init__(self, session: aiohttp.ClientSession, ip: str) -> None:
         """Sample API Client."""
         self._ip = ip
         self._session = session
@@ -50,20 +50,11 @@ class DrooffFireplusApiClient:
             url=f"http://{self._ip}/php/easpanel.php",
         )
 
-    async def async_set_title(self, value: str) -> Any:
-        """Get data from the API."""
-        return await self._api_wrapper(
-            method="patch",
-            url="https://jsonplaceholder.typicode.com/posts/1",
-            data={"title": value},
-            headers={"Content-type": "application/json; charset=UTF-8"},
-        )
-
     async def _api_wrapper(
         self,
         method: str,
         url: str,
-        data: dict | None = None,
+      #  data: dict | None = None,
         headers: dict | None = None,
     ) -> Any:
         """Get information from the API."""
@@ -72,11 +63,10 @@ class DrooffFireplusApiClient:
                 response = await self._session.request(
                     method=method,
                     url=url,
-                    headers=headers,
-                    json=data,
+                    headers=headers
                 )
                 _verify_response_or_raise(response)
-                return await response.json()
+                return await response.text()
 
         except TimeoutError as exception:
             msg = f"Timeout error fetching information - {exception}"
@@ -89,7 +79,7 @@ class DrooffFireplusApiClient:
                 msg,
             ) from exception
         except Exception as exception:  # pylint: disable=broad-except
-            msg = f"Something really wrong happened! - {exception}"
+            msg = f"Something really wrong happened! - {exception}, {self._ip}"
             raise DrooffFireplusApiClientError(
                 msg,
             ) from exception
