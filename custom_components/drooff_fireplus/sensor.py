@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from aioesphomeapi.connection import dataclass
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
-from homeassistant.const import UnitOfTemperature, PERCENTAGE, UnitOfPressure
+from homeassistant.const import PERCENTAGE, UnitOfPressure, UnitOfTemperature
 from homeassistant.helpers.device_registry import DeviceInfo
 
 from .entity import DrooffFireplusEntity
@@ -18,21 +18,18 @@ if TYPE_CHECKING:
     from .coordinator import FirePlusDataUpdateCoordinator
     from .data import DrooffFireplusConfigEntry
 
+
 @dataclass(frozen=True, kw_only=True)
 class DrooffFireplusSensorEntityDescription(SensorEntityDescription):
     """Description of a Drooff Fireplus sensor."""
+
     entity_position: int
+
 
 """
 get descriptions from here
 https://openhabforum.de/viewtopic.php?t=4386&start=20
 
-   Betrieb: 1-4 (1 = Service, 2 = ECO, 3 = Normal, 4 = Power)
-  Leistung: 4, 8 (4 = 4 kW, 8 = 8 kW)
-Helligkeit: 20 - 100, Schrittweite 10 (aber eventuell geht es auch in kleineren Schritten)
- Bedienung: 0, 1 (0 = keine Fernbedienung, 1 = Fernbedienung)
-       LED: 0, 1 (0 = LED-Band aus, 1 = LED-Band an)
-        AB: 0, 1 (0 = Gluterhaltung, 1 = Glutabbrand)
 """
 ENTITY_DESCRIPTIONS = (
     DrooffFireplusSensorEntityDescription(
@@ -40,21 +37,21 @@ ENTITY_DESCRIPTIONS = (
         name="Brennraumtemperatur",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         icon="mdi:fire",
-        entity_position=5
+        entity_position=5,
     ),
     DrooffFireplusSensorEntityDescription(
         key="drooff_fireplus.luftschieber",
         name="Luftschieber",
         native_unit_of_measurement=PERCENTAGE,
         icon="mdi:air-filter",
-        entity_position=6
+        entity_position=6,
     ),
     DrooffFireplusSensorEntityDescription(
         key="drooff_fireplus.feinzug",
         name="Feinzug",
         native_unit_of_measurement=UnitOfPressure.PA,
         icon="mdi:fireplace",
-        entity_position=7
+        entity_position=7,
     ),
 )
 

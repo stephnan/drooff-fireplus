@@ -4,14 +4,13 @@ from __future__ import annotations
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, CONF_IP_ADDRESS
+from homeassistant.const import CONF_IP_ADDRESS
 from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from slugify import slugify
 
 from .api import (
     DrooffFireplusApiClient,
-    DrooffFireplusApiClientAuthenticationError,
     DrooffFireplusApiClientCommunicationError,
     DrooffFireplusApiClientError,
 )
@@ -31,9 +30,7 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         _errors = {}
         if user_input is not None:
             try:
-                await self._test_credentials(
-                    ip=user_input[CONF_IP_ADDRESS]
-                )
+                await self._test_credentials(ip=user_input[CONF_IP_ADDRESS])
             except DrooffFireplusApiClientCommunicationError as exception:
                 LOGGER.error(exception)
                 _errors["base"] = "connection"
@@ -64,8 +61,7 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                         selector.TextSelectorConfig(
                             type=selector.TextSelectorType.TEXT,
                         ),
-                    )
-                    ,
+                    ),
                     vol.Optional("interval", default=30): int,
                 },
             ),
@@ -74,5 +70,7 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def _test_credentials(self, ip: str) -> None:
         """Validate credentials."""
-        client = DrooffFireplusApiClient(session=async_create_clientsession(self.hass), ip=ip)
+        client = DrooffFireplusApiClient(
+            session=async_create_clientsession(self.hass), ip=ip
+        )
         await client.async_get_data()

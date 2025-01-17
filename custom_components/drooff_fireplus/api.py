@@ -54,16 +54,13 @@ class DrooffFireplusApiClient:
         self,
         method: str,
         url: str,
-      #  data: dict | None = None,
         headers: dict | None = None,
     ) -> Any:
         """Get information from the API."""
         try:
             async with async_timeout.timeout(10):
                 response = await self._session.request(
-                    method=method,
-                    url=url,
-                    headers=headers
+                    method=method, url=url, headers=headers
                 )
                 _verify_response_or_raise(response)
                 return await response.text()
