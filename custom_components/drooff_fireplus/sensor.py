@@ -50,8 +50,14 @@ ENTITY_DESCRIPTIONS = (
         key="drooff_fireplus.feinzug",
         name="Feinzug",
         native_unit_of_measurement=UnitOfPressure.PA,
-        icon="mdi:fireplace",
+        icon="mdi:home-roof",
         entity_position=7,
+    ),
+    DrooffFireplusSensorEntityDescription(
+        key="drooff_fireplus.status",
+        name="Betriebsstatus",
+        icon="mdi:fireplace",
+        entity_position=8,
     ),
 )
 
