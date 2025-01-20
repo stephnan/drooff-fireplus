@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from aioesphomeapi.connection import dataclass
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
-from homeassistant.const import PERCENTAGE, UnitOfPressure, UnitOfTemperature
+from homeassistant.const import PERCENTAGE, UnitOfPressure, UnitOfTemperature, UnitOfPower
 from homeassistant.helpers.device_registry import DeviceInfo
 
 from .entity import DrooffFireplusEntity
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 class DrooffFireplusSensorEntityDescription(SensorEntityDescription):
     """Description of a Drooff Fireplus sensor."""
 
-    entity_position: int
+    entity_object: str
 
 
 """
@@ -37,27 +37,66 @@ ENTITY_DESCRIPTIONS = (
         name="Brennraumtemperatur",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         icon="mdi:fire",
-        entity_position=5,
+        entity_object="TEMPERATUR",
     ),
     DrooffFireplusSensorEntityDescription(
         key="drooff_fireplus.luftschieber",
         name="Luftschieber",
         native_unit_of_measurement=PERCENTAGE,
         icon="mdi:air-filter",
-        entity_position=6,
+        entity_object="SCHIEBER",
     ),
     DrooffFireplusSensorEntityDescription(
         key="drooff_fireplus.feinzug",
         name="Feinzug",
         native_unit_of_measurement=UnitOfPressure.PA,
         icon="mdi:home-roof",
-        entity_position=7,
+        entity_object="FEINZUG",
     ),
     DrooffFireplusSensorEntityDescription(
         key="drooff_fireplus.status",
         name="Betriebsstatus",
         icon="mdi:fireplace",
-        entity_position=8,
+        entity_object="STATUS",
+    ),
+    DrooffFireplusSensorEntityDescription(
+        key="drooff_fireplus.led_status",
+        name="LED Streifen",
+        icon="mdi:led-strip",
+        entity_object="LED",
+    ),
+    DrooffFireplusSensorEntityDescription(
+        key="drooff_fireplus.led_helligkeit",
+        name="LED Streifen",
+        icon="mdi:led-strip",
+        native_unit_of_measurement=PERCENTAGE,
+        entity_object="HELLIGKEIT",
+    ),
+    DrooffFireplusSensorEntityDescription(
+        key="drooff_fireplus.betriebsart",
+        name="Betriebart",
+        icon="mdi:campfire",
+        entity_object="BETRIEBSART",
+    ),
+    DrooffFireplusSensorEntityDescription(
+        key="drooff_fireplus.abbrand",
+        name="Abbrand",
+        icon="mdi:campfire",
+        entity_object="ABBRAND",
+    ),
+    DrooffFireplusSensorEntityDescription(
+        key="drooff_fireplus.leistung",
+        name="Leistung",
+        native_unit_of_measurement=UnitOfPower.KILO_WATT,
+        icon="mdi:heat-wave",
+        entity_object="LEISTUNG",
+    ),
+    DrooffFireplusSensorEntityDescription(
+        key="drooff_fireplus.lautstaerke",
+        name="Lautstärke",
+        icon="mdi:volume-high",
+        native_unit_of_measurement=PERCENTAGE,
+        entity_object="LAUTSTAERKE",
     ),
 )
 
@@ -72,7 +111,7 @@ async def async_setup_entry(
         DrooffFireplusSensor(
             coordinator=entry.runtime_data.coordinator,
             entity_description=entity_description,
-            entity_position=entity_description.entity_position,
+            entity_object=entity_description.entity_object,
         )
         for entity_description in ENTITY_DESCRIPTIONS
     )
@@ -85,12 +124,12 @@ class DrooffFireplusSensor(DrooffFireplusEntity, SensorEntity):
         self,
         coordinator: FirePlusDataUpdateCoordinator,
         entity_description: SensorEntityDescription,
-        entity_position: int,
+        entity_object: str,
     ) -> None:
         """Initialize the sensor class."""
         super().__init__(coordinator)
         self.entity_description = entity_description
-        self.entity_position = entity_position
+        self.entity_position = entity_object
         self._attr_unique_id = entity_description.key
         self._attr_device_info = DeviceInfo(
             identifiers={
@@ -104,4 +143,4 @@ class DrooffFireplusSensor(DrooffFireplusEntity, SensorEntity):
     @property
     def native_value(self) -> str | None:
         """Return the native value of the sensor."""
-        return str(self.coordinator.data).split("\\n")[self.entity_position]
+        return self.coordinator.data[self.entity_position]
