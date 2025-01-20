@@ -6,7 +6,12 @@ from typing import TYPE_CHECKING
 
 from aioesphomeapi.connection import dataclass
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
-from homeassistant.const import PERCENTAGE, UnitOfPressure, UnitOfTemperature, UnitOfPower
+from homeassistant.const import (
+    PERCENTAGE,
+    UnitOfPower,
+    UnitOfPressure,
+    UnitOfTemperature,
+)
 from homeassistant.helpers.device_registry import DeviceInfo
 
 from .entity import DrooffFireplusEntity
