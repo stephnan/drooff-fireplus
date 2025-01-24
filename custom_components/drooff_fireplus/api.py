@@ -120,6 +120,7 @@ class DrooffFireplusApiClient:
             ) from exception
 
     def __str_mapping_status(self, str_to_be_mapped: str) -> str:
+        sanitized_str = str_to_be_mapped.lower().strip()
         known_mappings = {
             "aus": "Standby",
             "gruen blinkt": "Anheizvorgang",
@@ -131,9 +132,9 @@ class DrooffFireplusApiClient:
             "rot blinkt": "Fehlermeldung",
         }
 
-        if str_to_be_mapped.lower() in known_mappings:
-            return known_mappings[str_to_be_mapped]
-        return str_to_be_mapped
+        if sanitized_str in known_mappings:
+            return known_mappings[sanitized_str]
+        return sanitized_str
 
     def __str_map_betriebsart(self, str_to_be_mapped: str) -> str:
         known_mappings = {"2": "Eco", "3": "Normal", "4": "Power"}
